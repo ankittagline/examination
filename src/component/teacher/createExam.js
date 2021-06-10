@@ -98,6 +98,7 @@ const CreateExam = () => {
         <meta name="description" content="Examination Demo" />
         <meta name="theme-color" content="#E6E6FA" />
       </Helmet>
+      <div>Testing</div>
 
       <div className="row">
         <div className="col-md-6 login-form-1">
