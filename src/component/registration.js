@@ -73,6 +73,12 @@ const Registration = () => {
       label: "Student",
     },
   };
+  const button = [
+    {
+      value: "Submit",
+      className: "btn btn-primary",
+    },
+  ];
 
   const ValidationForm = (error) => {
     let valid = true;
@@ -120,6 +126,7 @@ const Registration = () => {
             handleSubmit={handleSubmit}
             handleChange={handleChange}
             showError={showError}
+            button={button}
           />
           <div className="form-group">
             <Link to="/">Log in</Link>

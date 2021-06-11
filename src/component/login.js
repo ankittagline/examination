@@ -20,12 +20,10 @@ const Login = () => {
   const handleChange = (e) => {
     e.preventDefault();
     const { name, value } = e.target;
-
     const form = values;
     const error = showError;
     form[name] = value;
     error[name] = !validations(name, value);
-
     setValue({ ...values, [name]: value });
     setShowError(error);
   };
@@ -40,6 +38,7 @@ const Login = () => {
       className: "form-control",
       errorMessage: "* invalid Email",
       errorValue: showError.email,
+      autoComplete: "off",
     },
 
     password: {
@@ -81,12 +80,15 @@ const Login = () => {
         }
       });
     } else {
-      setShowError({
-        email: true,
-        password: true,
-      });
+      setShowError({ email: true, password: true });
     }
   };
+  const button = [
+    {
+      value: "Login",
+      className: "btn btn-primary",
+    },
+  ];
 
   return (
     <div className="container login-container">
@@ -105,6 +107,7 @@ const Login = () => {
             handleChange={handleChange}
             handleSubmit={handleSubmit}
             showError={showError}
+            button={button}
           />
           <div className="form-group">
             <Link className="ForgetPwd" to="/registration">

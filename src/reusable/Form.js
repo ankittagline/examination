@@ -1,13 +1,21 @@
 import React from "react";
 import Input from "./reusebleInput";
 import Select from "./reusableSelect";
+import Button from "./Button";
 
-const Form = ({ handleSubmit, handleChange, content, showError, select }) => {
+const Form = ({
+  handleSubmit,
+  handleChange,
+  content,
+  showError,
+  select,
+  button,
+  onClick,
+}) => {
   return (
     <div>
       <form onSubmit={handleSubmit}>
-        {console.log(`select`, select)}
-        {select && <Select {...select}/>}
+        {select && <Select {...select} handleChange={handleChange} />}
         {Object.values(content).map((item, index) => {
           const name = item.name;
           const error = showError[name];
@@ -20,7 +28,16 @@ const Form = ({ handleSubmit, handleChange, content, showError, select }) => {
             />
           );
         })}
-        <Input type="submit" className="btn btn-primary" value="Submit" />
+        {button &&
+          button.map((button, index) => {
+            return (
+              <Button
+                key={index}
+                onClick={() => onClick(button.name)}
+                {...button}
+              />
+            );
+          })}
       </form>
     </div>
   );

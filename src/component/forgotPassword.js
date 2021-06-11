@@ -64,6 +64,12 @@ const ForgotPassword = () => {
       errorValue: showError.email,
     },
   };
+  const button = [
+    {
+      value: "Submit",
+      className: "btn btn-primary",
+    },
+  ];
 
   return (
     <div className="container login-container">
@@ -81,6 +87,7 @@ const ForgotPassword = () => {
             handleSubmit={handleSubmit}
             handleChange={handleChange}
             showError={showError}
+            button={button}
           />
         </div>
       </div>

@@ -23,8 +23,6 @@ export default (pattern, value) => {
       return isEmpty(value);
     case email:
       return emailValidation(value);
-    case email:
-      return isEmpty(value);
     case password:
       return passwordValidation(value);
     case oldPassword:

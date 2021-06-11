@@ -48,6 +48,12 @@ const ResetPassword = () => {
       errorValue: showError.ConfirmPassword,
     },
   };
+  const button = [
+    {
+      value: "Submit",
+      className: "btn btn-primary",
+    },
+  ];
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -111,6 +117,7 @@ const ResetPassword = () => {
             handleSubmit={handleSubmit}
             handleChange={handleChange}
             showError={showError}
+            button={button}
           />
         </div>
       </div>
