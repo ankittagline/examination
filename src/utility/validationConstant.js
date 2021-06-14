@@ -6,3 +6,4 @@ export const oldPassword = "oldPassword";
 export const Password = "Password";
 export const ConfirmPassword = "ConfirmPassword";
 export const role = "role";
+export const subjectName = "subjectName";

@@ -85,10 +85,19 @@ const Login = () => {
   };
   const button = [
     {
+      name: "Login",
+      type: "submit",
       value: "Login",
       className: "btn btn-primary",
     },
   ];
+
+  const clickManage = (name) => {
+    switch (name) {
+      case "Login":
+        return handleSubmit();
+    }
+  };
 
   return (
     <div className="container login-container">
@@ -108,6 +117,7 @@ const Login = () => {
             handleSubmit={handleSubmit}
             showError={showError}
             button={button}
+            onClick={(name) => clickManage(name)}
           />
           <div className="form-group">
             <Link className="ForgetPwd" to="/registration">

@@ -7,6 +7,7 @@ import {
   ConfirmPassword,
   oldPassword,
   role,
+  subjectName,
 } from "./validationConstant";
 import { emailValidation, passwordValidation, isEmpty } from "./regex";
 
@@ -35,6 +36,8 @@ export default (pattern, value) => {
       return value === passwordValue;
     case role:
       return true;
+    case subjectName:
+      return isEmpty(value);
     default:
       return false;
   }
