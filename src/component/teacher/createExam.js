@@ -5,17 +5,17 @@ import { Helmet } from "react-helmet";
 const CreateExam = () => {
   const subjectOptions = ["PHY", "CHE", "MATHS", "GUJ"];
 
-  const initialState = {
-    subjectName: "",
-    questions: [
-      {
-        question: "",
-        answer: "",
-        options: [],
-      },
-    ],
-    notes: [],
-  };
+  // const initialState = {
+  //   subjectName: "",
+  //   questions: [
+  //     {
+  //       question: "",
+  //       answer: "",
+  //       options: [],
+  //     },
+  //   ],
+  //   notes: [],
+  // };
   const [values, setValues] = useState({});
   const [questions, setQuestions] = useState([]);
   const [currState, setCurrState] = useState(0);
@@ -31,7 +31,6 @@ const CreateExam = () => {
     notes: "",
   });
   const [showError, setShowError] = useState(examQuestions);
-
   useEffect(() => {
     if (questions?.length) {
       localStorage.setItem("exam", JSON.stringify(values));
@@ -61,7 +60,7 @@ const CreateExam = () => {
         notes: examQuestions.notes,
       });
     }
-  }, [questions, currState]);
+  }, [questions, currState, values]);
 
   // console.log(`Radio`, radioChecked);
   const formAttributes = {
@@ -78,9 +77,8 @@ const CreateExam = () => {
       name: "answer",
       type: "radio",
       value: examQuestions.txtOption1,
-      // onClick: () => {
-      //   setRadioChecked(true);
-      // },
+      // onClick: () => setRadioChecked(!radioChecked),
+      checked: radioChecked["id"],
     },
 
     txtOption1: {
@@ -96,10 +94,8 @@ const CreateExam = () => {
       name: "answer",
       type: "radio",
       value: examQuestions.txtOption2,
-      // onClick: () => {
-      //   setRadioChecked(true);
-      // },
-      // checked: radioChecked,
+      // onClick: () => setRadioChecked(!radioChecked),
+      checked: radioChecked["id"],
     },
     txtOption2: {
       name: "txtOption2",
@@ -114,9 +110,8 @@ const CreateExam = () => {
       name: "answer",
       type: "radio",
       value: examQuestions.txtOption3,
-      // onClick: () => {
-      //   setRadioChecked(true);
-      // },
+      // onClick: () => setRadioChecked(!radioChecked),
+      checked: radioChecked["id"],
     },
     txtOption3: {
       name: "txtOption3",
@@ -131,10 +126,8 @@ const CreateExam = () => {
       name: "answer",
       type: "radio",
       value: examQuestions.txtOption4,
-      defaultChecked: radioChecked,
-      // onClick: () => {
-      //   setRadioChecked(true);
-      // },
+      // onClick: () => setRadioChecked(!radioChecked),
+      checked: radioChecked["id"],
     },
     txtOption4: {
       name: "txtOption4",
@@ -172,7 +165,7 @@ const CreateExam = () => {
     value: examQuestions.subjectName,
     errorMessage: "Please Select Exam",
     errorValue: showError.subjectName,
-    disabled: questions && questions.length > 1,
+    disabled: questions?.length > 1,
   };
 
   const button = [
@@ -181,28 +174,38 @@ const CreateExam = () => {
       name: "Add",
       className: "btn btn-primary",
       value: "Add",
+      disabled: questions?.length >= 14,
     },
     {
       type: "submit",
       name: "submit",
       className: "btn btn-success",
       value: "Submit",
-      //disabled: questions.length <= 15,
+      disabled: questions?.length <= 14,
     },
-    {
+   {
       type: "button",
       name: "Pre",
       className: "btn btn-dark",
       value: "Pre",
+      disabled: questions?.length < 1 || currState === 0
     },
-    {
+   {
       type: "button",
       name: "Next",
       className: "btn btn-dark",
       value: "Next",
+      disabled: questions?.length < 1 || currState === 14,
+    },
+   {
+      type: "button",
+      name: "Edit",
+      className: "btn btn-primary",
+      value: "Edit",
     },
   ];
 
+  console.log(`currState`, currState)
   const clickManage = (name) => {
     switch (name) {
       case "Add":
@@ -211,10 +214,14 @@ const CreateExam = () => {
         return pre();
       case "Next":
         return next();
+      case "Edit":
+        return editQuestion();
     }
   };
 
   const addQuestion = () => {
+    
+
     let question = {
       question: examQuestions.question,
       answer: examQuestions.answer,
@@ -244,8 +251,25 @@ const CreateExam = () => {
       notes: [examQuestions.notes],
     });
     next();
-    setRadioChecked({ radioChecked: false });
+    setRadioChecked({
+      opt1: false,
+      opt2: false,
+      opt3: false,
+      opt4: false,
+    });
   };
+
+  const editQuestion = () => {
+    const edit = [...questions];
+    edit[currState].answer = examQuestions.answer;
+    edit[currState].question = examQuestions.question;
+    edit[currState].options[0] = examQuestions.txtOption1;
+    edit[currState].options[1] = examQuestions.txtOption2;
+    edit[currState].options[2] = examQuestions.txtOption3;
+    edit[currState].options[3] = examQuestions.txtOption4;
+    setQuestions(edit);
+  };
+
   const pre = () => {
     const localExam = JSON.parse(localStorage.getItem("exam"));
     const localQuestion = JSON.parse(localStorage.getItem("questions"));
@@ -265,10 +289,12 @@ const CreateExam = () => {
   };
 
   const handleChange = (e) => {
-    const { name, value, checked, id } = e.target;
+    const { name, value, id, checked } = e.target;
     setExamQuestions({ ...examQuestions, [name]: value });
-    setRadioChecked({ radioChecked: checked, [id]: checked });
-    console.log(`e.target.checked`, (e.target.checked).index);
+    setRadioChecked({
+      ...radioChecked,
+      [id]: checked,
+    });
   };
 
   const handleSubmit = (e) => {
@@ -278,10 +304,6 @@ const CreateExam = () => {
       subjectName: examQuestions.subjectName,
       questions,
       notes: [examQuestions.notes],
-    });
-    setExamQuestions({
-      subjectName: "",
-      notes: "",
     });
   };
 
@@ -301,7 +323,7 @@ const CreateExam = () => {
           <Form
             select={select}
             content={formAttributes}
-            handleChange={handleChange}
+            handleChange={(index) => handleChange(index)}
             showError={showError}
             button={button}
             onClick={(name) => clickManage(name)}

@@ -22,14 +22,14 @@ const Form = ({
           return (
             <Input
               key={index}
-              handleChange={handleChange}
+              handleChange={(index) => handleChange(index)}
               errorValue={error}
               {...item}
             />
           );
         })}
         {button &&
-          button.map((button, index) => {
+         button.map((button, index) => {
             return (
               <Button
                 key={index}

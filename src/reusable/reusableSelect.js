@@ -11,7 +11,7 @@ const Select = ({
   return (
     <div>
       {label && <label htmlFor="app-input-field">{label}</label>}
-      <select {...props} onChange={handleChange}>
+      <select {...props} onChange={(index) => handleChange(index)}>
         <option value=""> Select Subject </option>
         {option.map((value) => (
           <option key={value}> {value}</option>
