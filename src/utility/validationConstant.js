@@ -7,3 +7,7 @@ export const Password = "Password";
 export const ConfirmPassword = "ConfirmPassword";
 export const role = "role";
 export const subjectName = "subjectName";
+export const question = "question";
+export const options = "txtOption1 ,txtOption2 ,txtOption3, txtOption4";
+export const notes = "notes";
+export const answer = "answer";
