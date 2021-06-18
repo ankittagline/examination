@@ -22,7 +22,7 @@ const Form = ({
           return (
             <Input
               key={index}
-              handleChange={(index) => handleChange(index)}
+              handleChange={handleChange}
               errorValue={error}
               {...item}
             />

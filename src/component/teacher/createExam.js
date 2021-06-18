@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
+import { useHistory } from "react-router";
 import Form from "../../reusable/Form";
 import { Helmet } from "react-helmet";
 import validations from "../../utility/validation";
 
 const CreateExam = () => {
   const subjectOptions = ["PHY", "CHE", "MATHS", "GUJ"];
-
+  const history = useHistory();
   // const initialState = {
   //   subjectName: "",
   //   questions: [
@@ -33,13 +34,18 @@ const CreateExam = () => {
   });
   const [showError, setShowError] = useState(examQuestions);
 
-  const que = [...questions].reverse();
-
   useEffect(() => {
     if (questions?.length) {
       localStorage.setItem("questions", JSON.stringify(questions));
       localStorage.setItem("exam", JSON.stringify(values));
     }
+    //const localQuestion = JSON.parse(localStorage.getItem("questions"));
+    // let currStateNew = currState;
+    // if (localQuestion) {
+    //   currStateNew = localQuestion.length - 1;
+    //   console.log(`currStateNew`, currStateNew)
+    //   // setCurrState(currStateNew);
+    // }
 
     if (questions && questions[currState]) {
       setExamQuestions({
@@ -50,7 +56,7 @@ const CreateExam = () => {
         txtOption2: questions[currState].options[1],
         txtOption3: questions[currState].options[2],
         txtOption4: questions[currState].options[3],
-        notes: examQuestions.notes,
+        notes: values.notes,
       });
     } else {
       setExamQuestions({
@@ -64,7 +70,7 @@ const CreateExam = () => {
         notes: examQuestions.notes,
       });
     }
-  }, [questions, currState, values]);
+  }, [questions, currState]);
   useEffect(() => {
     const localExam = JSON.parse(localStorage.getItem("exam"));
     const localQuestion = JSON.parse(localStorage.getItem("questions"));
@@ -88,6 +94,7 @@ const CreateExam = () => {
   };
 
   const addQuestion = () => {
+    debugger;
     if (!ValidationForm(showError)) {
       let question = {
         question: examQuestions.question,
@@ -102,36 +109,55 @@ const CreateExam = () => {
       setQuestions([...questions, question]);
       setValues({
         subjectName: examQuestions.subjectName,
-        questions: questions,
+        questions: [...questions, question],
+        notes: examQuestions.notes,
+      });
+      setExamQuestions({
+        subjectName: examQuestions.subjectName,
+        question: "",
+        answer: "",
+        txtOption1: "",
+        txtOption2: "",
+        txtOption3: "",
+        txtOption4: "",
         notes: examQuestions.notes,
       });
       next();
       setRadioChecked(false);
     } else {
       setShowError({
-        subjectName: true,
         question: true,
+        answer: true,
+        txtOption1: true,
         txtOption2: true,
         txtOption3: true,
         txtOption4: true,
-        txtOption1: true,
-        notes: true,
-        answer: true,
       });
     }
   };
 
   const editQuestion = () => {
-    const edit = [...questions];
-    edit[currState].answer = examQuestions.answer;
-    edit[currState].question = examQuestions.question;
-    edit[currState].options[0] = examQuestions.txtOption1;
-    edit[currState].options[1] = examQuestions.txtOption2;
-    edit[currState].options[2] = examQuestions.txtOption3;
-    edit[currState].options[3] = examQuestions.txtOption4;
-    setQuestions(edit);
-    next();
-    setRadioChecked(false);
+    if (!ValidationForm(showError)) {
+      const edit = [...questions];
+      edit[currState].answer = examQuestions.answer;
+      edit[currState].question = examQuestions.question;
+      edit[currState].options[0] = examQuestions.txtOption1;
+      edit[currState].options[1] = examQuestions.txtOption2;
+      edit[currState].options[2] = examQuestions.txtOption3;
+      edit[currState].options[3] = examQuestions.txtOption4;
+      setQuestions(edit);
+      next();
+      setRadioChecked(false);
+    } else {
+      setShowError({
+        question: true,
+        answer: true,
+        txtOption1: true,
+        txtOption2: true,
+        txtOption3: true,
+        txtOption4: true,
+      });
+    }
   };
 
   const pre = () => {
@@ -146,14 +172,19 @@ const CreateExam = () => {
     }
   };
 
-  const handleChange = (e) => {
+  const handleChange = (e, demo) => {
     const { name, value, id, checked } = e.target;
     const form = examQuestions;
     const error = showError;
     form[name] = value;
     error[name] = !validations(name, value);
     setExamQuestions({ ...examQuestions, [name]: value });
-    setRadioChecked({
+
+    if (questions.some((ele) => ele.question === examQuestions.question)) {
+      showError.question = true;
+    }
+
+     setRadioChecked({
       [id]: checked,
     });
     setShowError(error);
@@ -170,11 +201,18 @@ const CreateExam = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     addQuestion();
-    setValues({
-      subjectName: examQuestions.subjectName,
-      questions: questions,
-      notes: examQuestions.notes,
-    });
+
+    setTimeout(() => {
+      localStorage.removeItem("exam");
+      localStorage.removeItem("questions");
+      history.push("/teacher");
+    }, 3000);
+
+    // setValues({
+    //   subjectName: examQuestions.subjectName,
+    //   questions: questions,
+    //   notes: examQuestions.notes,
+    // });
   };
 
   const formAttributes = {
@@ -185,7 +223,11 @@ const CreateExam = () => {
       label: "Question",
       className: "form-control",
       value: examQuestions.question,
-      errorMessage: "Question is required",
+      errorMessage: questions.some(
+        (ele) => ele.question === examQuestions.question
+      )
+        ? "Question is already Exist!!"
+        : "Question is required",
       errorValue: showError.question,
     },
     option1: {
@@ -275,7 +317,7 @@ const CreateExam = () => {
       placeholder: "Notes",
       label: "Notes",
       value: examQuestions.notes,
-      disabled: questions?.length <= 4,
+      disabled: questions?.length < 4,
       errorMessage: "required",
       errorValue: showError.notes,
     },
@@ -351,11 +393,11 @@ const CreateExam = () => {
           <Form
             select={select}
             content={formAttributes}
-            handleChange={(index) => handleChange(index)}
+            handleChange={handleChange}
             showError={showError}
             button={button}
             onClick={(name) => clickManage(name)}
-            handleSubmit={addQuestion}
+            handleSubmit={handleSubmit}
           />
         </div>
       </div>

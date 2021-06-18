@@ -1,4 +1,21 @@
-import { email, password, confirmPassword, name, Password, ConfirmPassword, oldPassword, role, subjectName, question, options, notes, answer,} from "./validationConstant";
+import {
+  email,
+  password,
+  confirmPassword,
+  name,
+  Password,
+  ConfirmPassword,
+  oldPassword,
+  role,
+  subjectName,
+  question,
+  options1,
+  options2,
+  options3,
+  options4,
+  notes,
+  answer,
+} from "./validationConstant";
 import { emailValidation, passwordValidation, isEmpty } from "./regex";
 
 let passwordValue = "";
@@ -9,6 +26,7 @@ export default (pattern, value) => {
   if (pattern === Password) {
     passwordValue = value;
   }
+    
   switch (pattern) {
     case name:
       return isEmpty(value);
@@ -30,13 +48,19 @@ export default (pattern, value) => {
       return isEmpty(value);
     case question:
       return isEmpty(value);
-    case options:
+    case options1:
+      return false;
+    case options2:
+      return isEmpty(value);
+    case options3:
+      return isEmpty(value);
+    case options4:
       return isEmpty(value);
     case notes:
       return isEmpty(value);
     case answer:
       return isEmpty(value);
     default:
-      return false;
+      return true;
   }
 };
